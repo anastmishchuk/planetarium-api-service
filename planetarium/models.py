@@ -1,17 +1,6 @@
 from django.db import models
 
 
-class AstronomyShow(models.Model):
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-
-    class Meta:
-        ordering = ["title"]
-
-    def __str__(self):
-        return self.title
-
-
 class ShowTheme(models.Model):
     name = models.CharField(max_length=255)
 
@@ -30,6 +19,17 @@ class PlanetariumDome(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class AstronomyShow(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+
+    class Meta:
+        ordering = ["title"]
+
+    def __str__(self):
+        return self.title
 
 
 class ShowSession(models.Model):
