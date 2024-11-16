@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from planetarium_api_service import settings
@@ -26,6 +27,7 @@ class PlanetariumDome(models.Model):
 class AstronomyShow(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
+    show_theme = models.ManyToManyField(ShowTheme)
 
     class Meta:
         ordering = ["title"]
@@ -68,3 +70,30 @@ class Ticket(models.Model):
     reservation = models.ForeignKey(
         Reservation, on_delete=models.CASCADE, related_name="tickets"
     )
+
+    def clean(self):
+        for ticket_attr_value, ticket_attr_name, planetarium_dome_attr_name in [
+            (self.row, "row", "count_rows"),
+            (self.seat, "seat", "count_seats_in_row"),
+        ]:
+            count_attrs = getattr(
+                self.show_session.planetarium_dome, planetarium_dome_attr_name
+            )
+            if not (1 <= ticket_attr_value <= count_attrs):
+                raise ValidationError(
+                    {
+                        ticket_attr_name: f"{ticket_attr_name} number "
+                        f"must be in available range: "
+                        f"(1, {planetarium_dome_attr_name}): "
+                        f"(1, {count_attrs})"
+                    }
+                )
+
+    def __str__(self):
+        return (
+            f"{str(self.show_session)} (row: {self.row}, seat: {self.seat})"
+        )
+
+    class Meta:
+        unique_together = ("show_session", "row", "seat")
+
