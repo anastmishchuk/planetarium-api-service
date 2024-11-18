@@ -1,3 +1,5 @@
+from django.db.models import Count, F
+from django.utils.dateparse import parse_date
 from rest_framework import viewsets
 
 
@@ -66,9 +68,23 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
     serializer_class = ShowSessionSerializer
 
     def get_queryset(self):
-        queryset = self.queryset
-        if self.action in ("list", "retrieve"):
-            return queryset.select_related("astronomy_show", "planetarium_dome")
+        queryset = (
+            ShowSession.objects.all().select_related("astronomy_show", "planetarium_dome")
+            .annotate(
+                tickets_available=F("planetarium_dome__rows")
+                * F("planetarium_dome__seats_in_row")
+                - Count("tickets")
+            )
+        )
+        astronomy_show = self.request.query_params.get("astronomy_show")
+        date = self.request.query_params.get("date")
+
+        if astronomy_show:
+            queryset = queryset.filter(astronomy_show__id=int(astronomy_show))
+        if date:
+            parsed_date = parse_date(date)
+            if parsed_date:
+                queryset = queryset.filter(show_time__date=parsed_date)
         return queryset
 
     def get_serializer_class(self):
