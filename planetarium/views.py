@@ -1,7 +1,9 @@
 from django.db.models import Count, F
 from django.utils.dateparse import parse_date
 from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 
 from planetarium.models import (
     ShowTheme,
@@ -111,7 +113,8 @@ class ReservationViewSet(viewsets.ModelViewSet):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
     pagination_class = ReservationPagination
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         queryset = self.queryset.filter(user=self.request.user)
