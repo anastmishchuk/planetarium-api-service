@@ -28,7 +28,7 @@ class PlanetariumDome(models.Model):
 class AstronomyShow(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    show_theme = models.ManyToManyField(ShowTheme)
+    show_themes = models.ManyToManyField(ShowTheme)
 
     class Meta:
         ordering = ["title"]

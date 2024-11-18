@@ -15,11 +15,12 @@ from planetarium.serializers import (
     PlanetariumDomeSerializer,
     AstronomyShowSerializer,
     AstronomyShowListSerializer,
-    AstronomyShowRetrieveSerializer,
     ShowSessionSerializer,
     ShowSessionListSerializer,
     ShowSessionRetrieveSerializer,
-    ReservationSerializer, ReservationListSerializer,
+    ReservationSerializer,
+    ReservationListSerializer,
+    AstronomyShowDetailSerializer,
 )
 
 
@@ -57,7 +58,7 @@ class AstronomyShowViewSet(viewsets.ModelViewSet):
         if self.action == "list":
             return AstronomyShowListSerializer
         if self.action == "retrieve":
-            return AstronomyShowRetrieveSerializer
+            return AstronomyShowDetailSerializer
         return AstronomyShowSerializer
 
 

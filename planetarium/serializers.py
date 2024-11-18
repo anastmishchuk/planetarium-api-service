@@ -27,7 +27,7 @@ class PlanetariumDomeSerializer(serializers.ModelSerializer):
 class AstronomyShowSerializer(serializers.ModelSerializer):
     class Meta:
         model = AstronomyShow
-        fields = ("id", "title", "description", "show_theme")
+        fields = ("id", "title", "description", "show_themes")
 
 
 class AstronomyShowListSerializer(AstronomyShowSerializer):
@@ -38,8 +38,12 @@ class AstronomyShowListSerializer(AstronomyShowSerializer):
     )
 
 
-class AstronomyShowRetrieveSerializer(AstronomyShowSerializer):
+class AstronomyShowDetailSerializer(AstronomyShowSerializer):
     show_themes = ShowThemeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = AstronomyShow
+        fields = ("id", "title", "description", "show_themes")
 
 
 class ShowSessionSerializer(serializers.ModelSerializer):
