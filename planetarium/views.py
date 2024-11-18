@@ -10,6 +10,7 @@ from planetarium.models import (
     ShowSession,
     Reservation
 )
+from planetarium.permissions import IsAdminOrIfAuthenticatedReadOnly
 from planetarium.serializers import (
     ShowThemeSerializer,
     PlanetariumDomeSerializer,
@@ -27,16 +28,19 @@ from planetarium.serializers import (
 class ShowThemeViewSet(viewsets.ModelViewSet):
     queryset = ShowTheme.objects.all()
     serializer_class = ShowThemeSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class PlanetariumDomeViewSet(viewsets.ModelViewSet):
     queryset = PlanetariumDome.objects.all()
     serializer_class = PlanetariumDomeSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class AstronomyShowViewSet(viewsets.ModelViewSet):
     queryset = AstronomyShow.objects.prefetch_related("show_themes")
     serializer_class = AstronomyShowSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     @staticmethod
     def _params_to_ints(query_string):
@@ -67,6 +71,7 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
         "astronomy_show", "planetarium_dome"
     )
     serializer_class = ShowSessionSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_queryset(self):
         queryset = (
@@ -106,6 +111,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
     pagination_class = ReservationPagination
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_queryset(self):
         queryset = self.queryset.filter(user=self.request.user)
