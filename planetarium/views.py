@@ -1,7 +1,7 @@
 from django.db.models import Count, F
 from django.utils.dateparse import parse_date
 from rest_framework import viewsets
-
+from rest_framework.pagination import PageNumberPagination
 
 from planetarium.models import (
     ShowTheme,
@@ -95,6 +95,13 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
         return ShowSessionSerializer
 
 
+class ReservationPagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = "page_size"
+    max_page_size = 20
+
+
 class ReservationViewSet(viewsets.ModelViewSet):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
+    pagination_class = ReservationPagination
