@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
 from planetarium.models import (
     ShowTheme,
@@ -76,6 +77,20 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = ("id", "row", "seat", "show_session")
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Ticket.objects.all(),
+                fields=["show_session", "row", "seat"]
+            )
+        ]
+
+    def validate(self, attrs):
+        Ticket.validate_seat_and_row(
+            attrs["seat"],
+            attrs["row"],
+            attrs["show_session"].planetarium_dome,
+            serializers.ValidationError
+        )
 
 
 class ReservationSerializer(serializers.ModelSerializer):
