@@ -19,7 +19,7 @@ from planetarium.serializers import (
     ShowSessionSerializer,
     ShowSessionListSerializer,
     ShowSessionRetrieveSerializer,
-    ReservationSerializer,
+    ReservationSerializer, ReservationListSerializer,
 )
 
 
@@ -105,3 +105,22 @@ class ReservationViewSet(viewsets.ModelViewSet):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
     pagination_class = ReservationPagination
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(user=self.request.user)
+
+        if self.action == "list":
+            queryset = queryset.prefetch_related(
+                "tickets__show_session__planetarium_dome"
+            )
+        return queryset
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_serializer_class(self):
+        serializer = self.serializer_class
+
+        if self.action == "list":
+            serializer = ReservationListSerializer
+        return serializer
