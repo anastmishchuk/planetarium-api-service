@@ -1,4 +1,5 @@
 from django.db.models import Count, F
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from django.utils.dateparse import parse_date
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
@@ -25,7 +26,8 @@ from planetarium.serializers import (
     ShowSessionRetrieveSerializer,
     ReservationSerializer,
     ReservationListSerializer,
-    AstronomyShowDetailSerializer, AstronomyShowImageSerializer,
+    AstronomyShowDetailSerializer,
+    AstronomyShowImageSerializer,
 )
 
 
@@ -85,6 +87,24 @@ class AstronomyShowViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "title",
+                type={"type": "string", "items": {"type": "str"}},
+                description="Filter by astronomy show title (ex. ?title=The Big Bang)",
+            ),
+            OpenApiParameter(
+                "show_themes",
+                type={"type": "list", "items": {"type": "number"}},
+                description="Filter by show themes id (ex. ?show_themes=4,5)",
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        """Get list of astronomy shows."""
+        return super().list(request, *args, **kwargs)
+
 
 class ShowSessionViewSet(viewsets.ModelViewSet):
     queryset = ShowSession.objects.all().select_related(
@@ -119,6 +139,24 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
         if self.action == "retrieve":
             return ShowSessionRetrieveSerializer
         return ShowSessionSerializer
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "date",
+                type={"type": "string"},
+                description="Filter by date (ex. ?date=2024-11-20)",
+            ),
+            OpenApiParameter(
+                "astronomy_show",
+                type={"type": "number"},
+                description="Filter by astronomy show id (ex. ?astronomy_show=4)",
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        """Get list of show sessions."""
+        return super().list(request, *args, **kwargs)
 
 
 class ReservationPagination(PageNumberPagination):
