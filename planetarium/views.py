@@ -1,9 +1,11 @@
 from django.db.models import Count, F
 from django.utils.dateparse import parse_date
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
 
 from planetarium.models import (
     ShowTheme,
@@ -23,7 +25,7 @@ from planetarium.serializers import (
     ShowSessionRetrieveSerializer,
     ReservationSerializer,
     ReservationListSerializer,
-    AstronomyShowDetailSerializer,
+    AstronomyShowDetailSerializer, AstronomyShowImageSerializer,
 )
 
 
@@ -65,7 +67,23 @@ class AstronomyShowViewSet(viewsets.ModelViewSet):
             return AstronomyShowListSerializer
         if self.action == "retrieve":
             return AstronomyShowDetailSerializer
+        if self.action == "upload_image":
+            return AstronomyShowImageSerializer
         return AstronomyShowSerializer
+
+    @action(
+        methods=["POST"],
+        detail=True,
+        permission_classes=[IsAdminUser],
+        url_path="upload-image"
+    )
+    def upload_image(self, request, pk=None):
+        movie = self.get_object()
+        serializer = self.get_serializer(movie, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ShowSessionViewSet(viewsets.ModelViewSet):
