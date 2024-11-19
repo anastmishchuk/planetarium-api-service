@@ -1,6 +1,10 @@
+import os
+import uuid
+
 from typing import Type
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.text import slugify
 
 from planetarium_api_service import settings
 
@@ -25,10 +29,19 @@ class PlanetariumDome(models.Model):
         return self.name
 
 
+def astronomy_show_image_path(instance: "AstronomyShow", filename: str) -> str:
+    _, extension = os.path.splitext(filename)
+    return os.path.join(
+        "uploads/images/",
+        f"{slugify(instance.title)}-{uuid.uuid4()}{extension}"
+    )
+
+
 class AstronomyShow(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     show_themes = models.ManyToManyField(ShowTheme)
+    image = models.ImageField(null=True, upload_to=astronomy_show_image_path)
 
     class Meta:
         ordering = ["title"]
