@@ -1,9 +1,9 @@
 FROM python:3.11.6-alpine3.18
 LABEL maintainer="mishchuk.anastasiia@gmail.com"
 
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
-WORKDIR app/
+WORKDIR /app
 
 RUN apk add -u zlib-dev jpeg-dev gcc musl-dev
 

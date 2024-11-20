@@ -1,5 +1,5 @@
 services:
-  cinema_service:
+  planetarium_api_service:
     build:
       context: .venv
     env_file:
