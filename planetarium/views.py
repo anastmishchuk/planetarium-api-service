@@ -2,7 +2,6 @@ from django.db.models import Count, F
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from django.utils.dateparse import parse_date
 from rest_framework import viewsets, status
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -115,7 +114,9 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = (
-            ShowSession.objects.all().select_related("astronomy_show", "planetarium_dome")
+            ShowSession.objects.all().select_related(
+                "astronomy_show", "planetarium_dome"
+            )
             .annotate(
                 tickets_available=F("planetarium_dome__rows")
                 * F("planetarium_dome__seats_in_row")
@@ -169,7 +170,6 @@ class ReservationViewSet(viewsets.ModelViewSet):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
     pagination_class = ReservationPagination
-    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):

@@ -112,12 +112,14 @@ class TicketSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
+        data = super(TicketSerializer, self).validate(attrs=attrs)
         Ticket.validate_seat_and_row(
             attrs["seat"],
             attrs["row"],
             attrs["show_session"].planetarium_dome,
             serializers.ValidationError
         )
+        return data
 
 
 class TicketSeatSerializer(TicketSerializer):
@@ -141,7 +143,13 @@ class ShowSessionDetailSerializer(ShowSessionSerializer):
 
     class Meta:
         model = ShowSession
-        fields = ("id", "show_time", "astronomy_show", "planetarium_dome", "taken_places")
+        fields = (
+            "id",
+            "show_time",
+            "astronomy_show",
+            "planetarium_dome",
+            "taken_places"
+        )
 
 
 class ReservationSerializer(serializers.ModelSerializer):
