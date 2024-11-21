@@ -1,7 +1,7 @@
 services:
   planetarium_api_service:
     build:
-      context: .venv
+      context: .
     env_file:
       - .env
     ports:
