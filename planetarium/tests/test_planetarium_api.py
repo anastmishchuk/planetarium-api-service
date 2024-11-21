@@ -108,7 +108,7 @@ class AstronomyShowImageUploadTests(TestCase):
                 {
                     "title": "Title",
                     "description": "Description",
-                    "show_themes": [1],
+                    "show_themes": [self.show_theme.pk],
                     "image": ntf,
                 },
                 format="multipart",
