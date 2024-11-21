@@ -41,7 +41,7 @@ class AstronomyShow(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     show_themes = models.ManyToManyField(ShowTheme, blank=True)
-    image = models.ImageField(null=True, upload_to=astronomy_show_image_path)
+    image = models.ImageField(null=True, blank=True, upload_to=astronomy_show_image_path)
 
     class Meta:
         ordering = ["title"]
