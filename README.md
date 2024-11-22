@@ -51,7 +51,7 @@ Install PostgresSQL and create db
 
 #### Authentication
 
-API uses token-based authentication. Obtain a token by logging in to `/api/token/` with your credentials.
+API uses token-based authentication. Obtain a token by logging in to `/api/user/token/` with your credentials.
 
 #### Features
 
