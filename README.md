@@ -7,7 +7,7 @@ API service for planetarium management written on Django Rest Framework (DRF).
 
 Install PostgresSQL and create db
 
-    ```bash
+    ```
     git clone https://github.com/anastmishchuk/planetarium-api-service.git
     cd planetarium-api-service
     python -m venv venv
@@ -17,9 +17,10 @@ Install PostgresSQL and create db
 
 **Set up environment variables:**
 
-    Create a `.env` file in the root directory of your project and add the following environment variables:
+    Create a `.env` file in the root directory of your project and 
+    add the following environment variables:
 
-    ```text
+    ```
     DB_HOST=<your db hostname>
     DB_NAME=<your db name>
     DB_USER=<your db username>
@@ -29,20 +30,20 @@ Install PostgresSQL and create db
 
 **Apply the database migrations:**
 
-    ```bash
+    ```
     python manage.py makemigrations
     python manage.py migrate
     ```
 
 **Create a superuser:**
 
-    ```bash
+    ```
     python manage.py createsuperuser
     ```
 
 **Run the development server:**
 
-    ```bash
+    ```
     python manage.py runserver
     ```
 
